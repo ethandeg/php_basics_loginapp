@@ -45,7 +45,14 @@ function create_row(){
     global $connection;
     $username = $_POST['username'];
     $password = $_POST['password'];
-
+    /* SANITIZE FOR SQL INJECTION HACKERS */
+    $username = mysqli_real_escape_string($connection, $username);
+    $password = mysqli_real_escape_string($connection, $password);
+    
+    $hash_format = '$2y$10$';
+    $salt = "iusesomecrazystrings22";
+    $hashF_and_salt = $hash_format . $salt;
+    $password = crypt($password, $hashF_and_salt);
     $query = "INSERT INTO users (username, password) ";
     $query .= "VALUES ('$username', '$password')";
     $result = mysqli_query($connection, $query);
